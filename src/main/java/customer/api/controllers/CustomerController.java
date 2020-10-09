@@ -10,12 +10,12 @@ import customer.api.transformer.JsonTransform;
 
 public class CustomerController {
 
-	public CustomerController() {
+	public CustomerController(ObjectMapper objectMapper, JsonTransform jsonTransform) {
 		
-		setup();
+		setup(objectMapper,jsonTransform);
 	}
 
-	private void setup() {
+	private void setup(ObjectMapper objectMapper, JsonTransform jsonTransform) {
 		 
 		 get("/customer", "application/json", (request, response) -> {
 			 Customer customer =  new Customer();
@@ -24,7 +24,7 @@ public class CustomerController {
 			 customer.setGender(Gender.MASCULINO);
 			 customer.setEmail("desenvolvimento@tce.ma.gov.br");
 			    return customer;
-			}, new JsonTransform());
+			}, jsonTransform);
 		 
 		 
 		 
@@ -39,7 +39,7 @@ public class CustomerController {
 			 customer.setGender(Gender.MASCULINO);
 			 customer.setEmail("desenvolvimento@tce.ma.gov.br");
 			    return customer;
-			}, new JsonTransform());
+			}, jsonTransform);
 		 
 		 
 		 
@@ -55,7 +55,8 @@ public class CustomerController {
 		        UUID id = model.createPost(creation.getTitle(), creation.getContent(), creation.getCategories());*/
 		        response.status(200);
 		        response.type("application/json");
-		        return id;
+		        //return id;
+		        return null;
 		    });
 		 
 		 

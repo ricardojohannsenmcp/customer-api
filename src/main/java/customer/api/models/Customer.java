@@ -11,10 +11,13 @@ public class Customer {
 	private Date birthDate;
 	private String cpf;
 	private Gender gender;
-	private Address mainAddress;
+	private Address address;
 	private Collection<Address> adresses;
 	
 	
+	public Customer() {}
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -51,11 +54,13 @@ public class Customer {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	public Address getMainAddress() {
-		return mainAddress;
+
+	public Address getAddress() {
+		return address;
 	}
-	public void setMainAddress(Address mainAddress) {
-		this.mainAddress = mainAddress;
+
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 	public Collection<Address> getAdresses() {
 		return adresses;
@@ -63,10 +68,5 @@ public class Customer {
 	public void setAdresses(Collection<Address> adresses) {
 		this.adresses = adresses;
 	}
-	
-	
-	
-	
-	
-	
+
 }

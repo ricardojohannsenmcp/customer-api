@@ -1,19 +1,16 @@
-
-apply plugin: 'java-library'
-
-repositories {
-   
-    jcenter()
-}
-
 plugins {
     id "org.flywaydb.flyway" version "7.0.1"
 }
 
-flyway {
-    url = 'jdbc:mysql://localhost:3306/customers_db'
-    user = 'root'
-    password= 'root'
+apply plugin: 'java-library'
+
+
+
+
+
+repositories {
+   
+    jcenter()
 }
 
 dependencies {
@@ -28,9 +25,19 @@ dependencies {
     
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
     
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    
     compile group: 'org.jdbi', name: 'jdbi3-core', version: '3.15.1'
     
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.30'
     
+}
+
+
+flyway{
+user='root'
+password = 'root'
+driver='com.mysql.jdbc.Driver'
+url='jdbc:mysql://localhost:3306/customer_db'
 }
 
