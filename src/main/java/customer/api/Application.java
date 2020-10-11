@@ -1,12 +1,16 @@
 package customer.api;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 
 import customer.api.controllers.CustomerController;
 import customer.api.di.GuiceModule;
+import customer.api.exceptions.BusinessException;
 import customer.api.transformer.JsonTransform;
+
+import static spark.Spark.*;
 
 public class Application {
 
@@ -22,7 +26,13 @@ public class Application {
 	}
 
 	void run(){
+		port(8080);
 		new CustomerController(objectMapper,jsonTransform);
+		
+		exception(BusinessException.class, (exception, request, response) -> {
+			response.status(400);
+			response.body(exception.getMessage());
+		});
 	}
 
 	public static void main(String[] args) {

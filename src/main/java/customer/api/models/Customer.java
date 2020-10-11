@@ -6,18 +6,22 @@ import java.util.Date;
 public class Customer {
 	
 	private Integer id;
+	private String name;
 	private String uuid;
 	private String email;
 	private Date birthDate;
 	private String cpf;
 	private Gender gender;
-	private Address address;
+	private Address mainAddress;
 	private Collection<Address> adresses;
 	
 	
-	public Customer() {}
-
-
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -54,13 +58,11 @@ public class Customer {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-
-	public Address getAddress() {
-		return address;
+	public Address getMainAddress() {
+		return mainAddress;
 	}
-
-	public void setAddress(Address address) {
-		this.address = address;
+	public void setMainAddress(Address mainAddress) {
+		this.mainAddress = mainAddress;
 	}
 	public Collection<Address> getAdresses() {
 		return adresses;
@@ -68,5 +70,8 @@ public class Customer {
 	public void setAdresses(Collection<Address> adresses) {
 		this.adresses = adresses;
 	}
+	
+	
+	
 
 }

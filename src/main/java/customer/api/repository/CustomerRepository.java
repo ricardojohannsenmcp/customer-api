@@ -11,16 +11,20 @@ import com.google.inject.Inject;
 import customer.api.models.Customer;
 import customer.api.row.mapper.CustomerRowMapper;
 
-public class CustomerRepository {
+
+
+public class CustomerRepository implements ICustomerRepository{
 	
 	@Inject
 	private Jdbi jdbi;
+
 	
 	
 	public Customer save(Customer customer) {
 		 Integer generatedId =  null;
 		try(Handle handle = jdbi.open()){
-			 generatedId = handle.createUpdate("insert into customer (uuid,cpf,email,birth_date,gender) values (:uuid,:cpf,:email,:birth,:gender) ")
+			 generatedId = handle.createUpdate("insert into customer (name,uuid,cpf,email,birth_date,gender) values (:name,:uuid,:cpf,:email,:birth,:gender) ")
+			.bind("name", customer.getName())
 			.bind("uuid", customer.getUuid())
 			.bind("cpf",customer.getCpf())
 			.bind("email", customer.getEmail())
@@ -31,9 +35,9 @@ public class CustomerRepository {
 	}
 	
 	
-	private Customer findByPrimaryKey(Integer id) {
+	public Customer findByPrimaryKey(Integer id) {
 		try(Handle handle = jdbi.open()){
-		Optional<Customer> optional = handle.createQuery("SELECT c.id,uuid,c.cpf,c.email,c.gender,c.birth_date from customer c where c.id = :id ")
+		Optional<Customer> optional = handle.createQuery("SELECT c.id,c.name,uuid,c.cpf,c.email,c.gender,c.birth_date from customer c where c.id = :id ")
 		.bind("id", id)
 		.map(new CustomerRowMapper()).findOne();
 		return optional.isPresent() ? optional.get() : null;
@@ -43,17 +47,20 @@ public class CustomerRepository {
 
 	public List<Customer> findAll(){
 		try(Handle handle = jdbi.open()){
-		List<Customer> customers = handle.createQuery("SELECT id, name FROM user ORDER BY id ASC").map(new CustomerRowMapper()).list();
+		List<Customer> customers = handle.createQuery("SELECT c.id,c.name,uuid,c.cpf,c.email,c.gender,c.birth_date from customer c").map(new CustomerRowMapper()).list();
 			return customers;
 		}
 	}
 	
 	
-	
-	
-	
-	
-	
+	public void delete(Integer customerId) {
+		
+		try(Handle handle = jdbi.open()){
+			handle.createUpdate("delete from customer_db.customer where id = :id")
+			.bind("id", customerId).execute();
+		}
+		
+	}
 	
 
 }

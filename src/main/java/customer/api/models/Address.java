@@ -1,5 +1,7 @@
 package customer.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Address {
 	
 	
@@ -12,6 +14,9 @@ public class Address {
 	private String number;
 	private String additionalInformation;
 	private boolean main;
+	
+	@JsonIgnore
+	private Customer customer;
 	
 	
 	public Integer getId() {
@@ -67,6 +72,12 @@ public class Address {
 	}
 	public void setMain(boolean main) {
 		this.main = main;
+	}
+	public Customer getCustomer() {
+		return customer;
+	}
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 	
 	
