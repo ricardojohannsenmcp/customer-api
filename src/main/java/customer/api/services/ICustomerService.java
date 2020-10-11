@@ -21,9 +21,12 @@ public interface ICustomerService {
 	public Address saveAddress(Customer customer, Address address);
 	
 	
-	public void removeAddressFromCustomer(Integer customerId,Integer addressId);
+	public void removeAddressFromCustomer(Customer customer,Address address);
 	
 	
 	public Address updateAddressFromCustomer(Customer customer,Address source, Address target);
+	
+	
+	public Customer findByCpf(String cpf);
 
 }

@@ -14,6 +14,8 @@ public interface IAdressRepository {
 	
 	public void delete(Integer addressId);
 	
+	public Address update(Address address);
 	
-
+	public void resetMainAddress(Address address);
+	
 }

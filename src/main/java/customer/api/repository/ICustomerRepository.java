@@ -14,6 +14,8 @@ public interface ICustomerRepository {
 	
 	public void delete(Integer customerId);
 	
+	public Customer update(Customer customer);
+	
 	
 
 }

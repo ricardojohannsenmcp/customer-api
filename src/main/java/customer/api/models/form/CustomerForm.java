@@ -17,7 +17,7 @@ public class CustomerForm {
 	private String gender;
 	private Address address;
 	
-
+	
 	public String getName() {
 		return name;
 	}

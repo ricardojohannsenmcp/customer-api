@@ -2,11 +2,8 @@ package customer.api.services;
 
 import java.util.List;
 
-import org.eclipse.jetty.http.HttpStatus;
-
 import com.google.inject.Inject;
 
-import customer.api.exceptions.BusinessException;
 import customer.api.models.Address;
 import customer.api.models.Customer;
 import customer.api.repository.AddressRepository;
@@ -22,7 +19,7 @@ public class CustomerService implements ICustomerService{
 	
 	@Override
 	public Customer save(Customer customer, Address address) {
-		
+		customer.checkValidState(this);
 		Customer createdCustomer = customerRepository.save(customer);
 	       address.setCustomer(createdCustomer);
 	       address.setMain(true);
@@ -90,23 +87,9 @@ public class CustomerService implements ICustomerService{
 
 
 	@Override
-	public void removeAddressFromCustomer(Integer customerId,Integer addressId) {
-		
-		Customer customer = findByPrimaryKey(customerId);
-		
-		if(customer == null) {
-			throw new BusinessException("This Customer not exists");
-		}
-		Address address =  addressRepository.findByPrimaryKey(addressId);
-		if(address == null) {
-			throw new BusinessException("This Address not exists");
-		}
-		if(!address.getCustomer().getId().equals(customer.getId())) {
-			throw new BusinessException("This Address not belong to this customer");
-		}
-		if(address.isMain()) {
-			throw new BusinessException("Cannot remove. The customer needs own one main address");
-		}
+	public void removeAddressFromCustomer(Customer customer, Address address) {
+		address.checkbelongsTo(customer);
+		address.checkCanBeDeleted();
 		addressRepository.delete(address.getId());
 	}
 
@@ -114,10 +97,7 @@ public class CustomerService implements ICustomerService{
 
 	@Override
 	public Address updateAddressFromCustomer(Customer customer, Address source, Address target) {
-		
-		if(!target.getCustomer().getId().equals(customer.getId())) {
-			throw new BusinessException("This address not belong to this customer");
-		}
+		target.checkbelongsTo(customer);
 		target.setState(source.getState());
 		target.setCity(source.getCity());
 		target.setNumber(source.getNumber());
@@ -127,7 +107,22 @@ public class CustomerService implements ICustomerService{
 		target.setStreet(source.getStreet());
 		target.setZipCode(source.getZipCode());
 		Address updated = addressRepository.update(target);
+		if(updated.isMain()) {
+			List<Address> addresses = addressesFromCustomer(customer.getId());
+			addresses.forEach(a ->{
+				if(!updated.getId().equals(a.getId())) {
+					addressRepository.resetMainAddress(a);
+				}
+			});
+		}
 		return updated;
+	}
+
+
+
+	@Override
+	public Customer findByCpf(String cpf) {
+		return customerRepository.findByCpf(cpf);
 	}
 
 

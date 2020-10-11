@@ -1,10 +1,16 @@
 package customer.api.models;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import customer.api.exceptions.BusinessException;
+import customer.api.services.CustomerService;
 
 public class Customer {
-	
+
 	private Integer id;
 	private String name;
 	private String uuid;
@@ -14,8 +20,49 @@ public class Customer {
 	private Gender gender;
 	private Address mainAddress;
 	private Collection<Address> adresses;
-	
-	
+
+
+
+
+	public void checkValidState(CustomerService customerService) {
+
+		if(birthDate != null) {
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(birthDate);
+			Integer birthYear = cal.get(Calendar.YEAR);
+
+			Calendar now =  Calendar.getInstance();
+			Integer nowYear = now.get(Calendar.YEAR);
+
+			if(nowYear - birthYear > 100) {
+				throw new BusinessException("the customer age cannot be greater be 100");
+			}
+			
+			Pattern pattern =  Pattern.compile("[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}");
+			Matcher matcher =  pattern.matcher(this.cpf);
+			
+			if(!matcher.matches()) {
+				throw new BusinessException("the cpf field should follow the pattern 999.999.999-99");
+			}
+
+			Customer other = customerService.findByCpf(this.cpf);
+			if(other != null) {
+				System.out.println("other != null");
+				if(this.id != null) {
+					System.out.println("id != null");
+					if(!other.getId().equals(this.getId())) {
+						throw new BusinessException("the cpf informed is already registered");
+					}
+				}else {
+					System.out.println("é null");
+					throw new BusinessException("the cpf informed is already registered");
+				}
+			}
+		}
+	}
+
+
 	public String getName() {
 		return name;
 	}
@@ -70,8 +117,8 @@ public class Customer {
 	public void setAdresses(Collection<Address> adresses) {
 		this.adresses = adresses;
 	}
-	
-	
-	
+
+
+
 
 }

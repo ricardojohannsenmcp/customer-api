@@ -2,6 +2,8 @@ package customer.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import customer.api.exceptions.BusinessException;
+
 public class Address {
 	
 	
@@ -17,6 +19,21 @@ public class Address {
 	
 	@JsonIgnore
 	private Customer customer;
+	
+	
+	
+	public void checkbelongsTo(Customer other) {
+		if(!this.customer.getId().equals(other.getId())) {
+			throw new BusinessException("This Address not belong to this customer");
+		}
+	}
+	
+	public void checkCanBeDeleted() {
+		if(this.main) {
+		throw new BusinessException("Cannot remove. The customer needs own one main address");
+		}
+	}
+	
 	
 	
 	public Integer getId() {

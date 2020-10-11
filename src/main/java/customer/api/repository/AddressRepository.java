@@ -8,6 +8,7 @@ import org.jdbi.v3.core.Jdbi;
 
 import com.google.inject.Inject;
 
+import customer.api.exceptions.BusinessException;
 import customer.api.models.Address;
 import customer.api.row.mapper.AddressRowMapper;
 
@@ -38,7 +39,7 @@ public class AddressRepository implements IAdressRepository{
 
 	public Address update(Address address) {
 		try(Handle handle = jdbi.open()){
-			handle.createUpdate("update customer_db.address  set state=:state, city =:city, neighborhood =:neighborhood,zip_code =:zipCode,street=:street,number=:number,additional_information=:additionalInformation,main=:main,customer_id=:customerId) where id=:id ")
+			handle.createUpdate("update customer_db.address  set state=:state, city =:city, neighborhood =:neighborhood,zip_code =:zipCode,street=:street,number=:number,additional_information=:additionalInformation,main=:main,customer_id=:customerId where id=:id ")
 			.bind("id", address.getId())		
 			.bind("state", address.getState())
 			.bind("city",address.getCity())
@@ -52,6 +53,17 @@ public class AddressRepository implements IAdressRepository{
 		}
 		return findByPrimaryKey(address.getId());
 	}
+	
+	
+	
+	public void resetMainAddress(Address address) {
+		try(Handle handle = jdbi.open()){
+			handle.createUpdate("update customer_db.address  set main=:main where id =:id ")
+			.bind("id",address.getId())
+			.bind("main", false).execute();
+		}
+		
+	}
 
 
 	public Address findByPrimaryKey(Integer id) {
@@ -59,7 +71,12 @@ public class AddressRepository implements IAdressRepository{
 			Optional<Address> optional = handle.createQuery("SELECT a.id,a.state,a.city,a.neighborhood,a.zip_code,a.additional_information,a.street,a.number,a.main,a.customer_id from customer_db.address a where a.id = :id ")
 					.bind("id", id)
 					.map(new AddressRowMapper()).findOne();
-			return optional.isPresent() ? optional.get() : null;
+			
+			if(!optional.isPresent()) {
+				throw new BusinessException("This address not exists");
+			}
+			
+			return optional.get();
 		}
 	}
 
