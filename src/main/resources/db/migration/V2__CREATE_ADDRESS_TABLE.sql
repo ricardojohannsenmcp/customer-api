@@ -7,6 +7,7 @@ neighborhood varchar (255),
 zip_code varchar (50),
 additional_information text,
 main boolean,
-customer_id integer
-
+customer_id integer,
+street varchar(255),
+number varchar(20)
 );

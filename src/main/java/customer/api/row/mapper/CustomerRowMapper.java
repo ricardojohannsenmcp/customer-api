@@ -20,6 +20,8 @@ public class CustomerRowMapper implements RowMapper<Customer>{
 		customer.setUuid(rs.getString("uuid"));
 		customer.setEmail(rs.getString("email"));
 		customer.setBirthDate(rs.getDate("birth_date"));
+		customer.setCreatedAt(rs.getDate("created_at"));
+		customer.setUpdatedAt(rs.getDate("updated_at"));
 		customer.setCpf(rs.getString("cpf"));
 		customer.setGender(Gender.valueOf(rs.getString("gender")));
 		return customer;

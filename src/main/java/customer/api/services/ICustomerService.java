@@ -10,6 +10,8 @@ public interface ICustomerService {
 	
 	public Customer save(Customer customer, Address address);
 	
+	public Customer update(Customer source,Customer target, Address address);
+	
     public List<Customer>  findAll();
     
     public Customer findByPrimaryKey(Integer customerId);

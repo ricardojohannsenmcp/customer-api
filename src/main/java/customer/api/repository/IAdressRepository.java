@@ -18,4 +18,6 @@ public interface IAdressRepository {
 	
 	public void resetMainAddress(Address address);
 	
+	public Address findMainAddressByCustomer(Integer customerId);
+	
 }

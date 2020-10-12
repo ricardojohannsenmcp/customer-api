@@ -127,6 +127,36 @@ public class CustomerService implements ICustomerService{
 
 
 
+	@Override
+	public Customer update(Customer source,Customer target, Address address) {
+		
+		target.setName(source.getName());
+		target.setCpf(source.getCpf());
+		target.setGender(source.getGender());
+		target.setBirthDate(source.getBirthDate());
+		target.setEmail(source.getEmail());
+		target.checkValidState(this);
+		Customer updatedCustomer = customerRepository.update(target);
+		if(address != null) {
+			Address originalAddress = addressRepository.findMainAddressByCustomer(updatedCustomer.getId());
+	       originalAddress.setCustomer(updatedCustomer);
+	       originalAddress.setStreet(address.getStreet());
+	       originalAddress.setCity(address.getCity());
+	       originalAddress.setState(address.getState());
+	       originalAddress.setZipCode(address.getZipCode());
+	       originalAddress.setNeighborhood(address.getNeighborhood());
+	       originalAddress.setNumber(address.getNumber());
+	       originalAddress.setId(originalAddress.getId());
+	       originalAddress.setAdditionalInformation(address.getAdditionalInformation());
+	       originalAddress.setMain(true);
+	       addressRepository.update(originalAddress);
+		}
+	       carregarEnderecos(updatedCustomer);
+		return updatedCustomer;
+	}
+
+
+
 	
 	
 	

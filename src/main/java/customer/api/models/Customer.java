@@ -18,6 +18,8 @@ public class Customer {
 	private Date birthDate;
 	private String cpf;
 	private Gender gender;
+	private Date createdAt;
+	private Date updatedAt;
 	private Address mainAddress;
 	private Collection<Address> adresses;
 
@@ -116,6 +118,26 @@ public class Customer {
 	}
 	public void setAdresses(Collection<Address> adresses) {
 		this.adresses = adresses;
+	}
+
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 

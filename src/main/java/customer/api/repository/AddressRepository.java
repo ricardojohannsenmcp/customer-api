@@ -91,6 +91,17 @@ public class AddressRepository implements IAdressRepository{
 			return adresses;
 		}
 	}
+	
+	
+	public Address findMainAddressByCustomer(Integer customerId) {
+		try(Handle handle = jdbi.open()){
+			Address adresses= handle.createQuery("SELECT a.id,a.state,a.city,a.neighborhood,a.zip_code,a.additional_information,a.street,a.number,a.main,a.customer_id from customer_db.address a where a.customer_id = :customerId and main =:main ")
+					.bind("customerId", customerId)
+					.bind("main", true)
+					.map(new AddressRowMapper()).one();
+			return adresses;
+		}
+	}
 
 
 	public void delete(Integer addressId) {

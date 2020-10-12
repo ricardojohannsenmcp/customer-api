@@ -37,7 +37,7 @@ public class CustomerController {
 	private void setup(ObjectMapper objectMapper, JsonTransform jsonTransform) {
 		
 		
-		post("/customer", (request, response) -> {
+		post("/customers", (request, response) -> {
 			CustomerForm customerForm = objectMapper.readValue(request.body(), CustomerForm.class);
 			Customer customer = customerForm.toCustomer();
 			Address address = customerForm.getAddress();
@@ -48,41 +48,52 @@ public class CustomerController {
 		}, jsonTransform);
 		
 
-		get("/customer", "application/json", (request, response) -> {
+		get("/customers", "application/json", (request, response) -> {
 			List<Customer> customers =  customerService.findAll();
 			return customers;
 		}, jsonTransform);
 
 
 
-		get("/customer/:id", "application/json", (request, response) -> {
+		get("/customers/:id", "application/json", (request, response) -> {
 			Customer customer =  customerService.findByPrimaryKey(Integer.valueOf(request.params("id")));
 			return customer;
 		}, jsonTransform);
 		
+		put("/customers/:id", (request, response) -> {
+			Customer originalCustomer = customerService.findByPrimaryKey(Integer.valueOf(request.params("id")));
+			CustomerForm customerForm = objectMapper.readValue(request.body(), CustomerForm.class);
+			Customer customer = customerForm.toCustomer();
+			Address address = customerForm.getAddress();
+			Customer saved = customerService.update(customer,originalCustomer,address);
+			response.status(200);
+			response.type("application/json");
+			return saved;
+		}, jsonTransform);
+		
 		
 
-		delete("/customer/:id",(request, response) -> {
+		delete("/customers/:id",(request, response) -> {
 			customerService.remove(Integer.valueOf(request.params("id")));
 			response.status(200);
 			return "";
 		});
 		
 		
-		post("/customer/:id/address", "application/json", (request, response) -> {
+		post("/customers/:id/address", "application/json", (request, response) -> {
 			Customer customer = customerService.findByPrimaryKey(Integer.valueOf(request.params("id")));
 			Address address = objectMapper.readValue(request.body(), Address.class);
 			return customerService.saveAddress(customer,address);
 		}, jsonTransform);
 		
 		
-		get("/customer/:id/address", "application/json", (request, response) -> {
+		get("/customers/:id/address", "application/json", (request, response) -> {
 			List<Address> addresses = customerService.addressesFromCustomer(Integer.valueOf(request.params("id")));
 			return addresses;
 		}, jsonTransform);
 		
 		
-		get("/customer/:id/address/:address_id", "application/json", (request, response) -> {
+		get("/customers/:id/address/:address_id", "application/json", (request, response) -> {
 			Customer customer =  customerService.findByPrimaryKey(Integer.valueOf(request.params("id")));
 			Address address = addressRepository.findByPrimaryKey(Integer.valueOf(request.params("address_id")));
 			address.checkbelongsTo(customer);
@@ -91,7 +102,7 @@ public class CustomerController {
 		
 		
 
-		put("/customer/:id/address/:address_id", "application/json", (request, response) -> {
+		put("/customers/:id/address/:address_id", "application/json", (request, response) -> {
 			Customer customer = customerService.findByPrimaryKey(Integer.valueOf(request.params("id")));
 			Address addressToUpdate = addressRepository.findByPrimaryKey(Integer.valueOf(request.params("address_id")));
 			Address address = objectMapper.readValue(request.body(), Address.class);
@@ -101,7 +112,7 @@ public class CustomerController {
 		
 		
 		
-		delete("/customer/:id/address/:address_id", "application/json", (request, response) -> {
+		delete("/customers/:id/address/:address_id", "application/json", (request, response) -> {
 			Customer customer = customerService.findByPrimaryKey(Integer.valueOf(request.params("id")));
 			Address address = addressRepository.findByPrimaryKey(Integer.valueOf(request.params("address_id")));
 			customerService.removeAddressFromCustomer(customer,address);
