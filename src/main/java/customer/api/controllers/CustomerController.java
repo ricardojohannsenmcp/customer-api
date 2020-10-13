@@ -14,6 +14,7 @@ import com.google.inject.Injector;
 import customer.api.di.GuiceModule;
 import customer.api.models.Address;
 import customer.api.models.Customer;
+import customer.api.models.CustomerFilter;
 import customer.api.models.form.CustomerForm;
 import customer.api.repository.IAdressRepository;
 import customer.api.services.ICustomerService;
@@ -30,12 +31,10 @@ public class CustomerController {
 		Injector injector = Guice.createInjector(new GuiceModule());
 		customerService = injector.getInstance(ICustomerService.class);
 		addressRepository =  injector.getInstance(IAdressRepository.class);
-		
 		setup(objectMapper,jsonTransform);
 	}
 
 	private void setup(ObjectMapper objectMapper, JsonTransform jsonTransform) {
-		
 		
 		post("/customers", (request, response) -> {
 			CustomerForm customerForm = objectMapper.readValue(request.body(), CustomerForm.class);
@@ -49,7 +48,7 @@ public class CustomerController {
 		
 
 		get("/customers", "application/json", (request, response) -> {
-			List<Customer> customers =  customerService.findAll();
+			List<Customer> customers =  customerService.findAll(new CustomerFilter(request));
 			return customers;
 		}, jsonTransform);
 
@@ -122,9 +121,5 @@ public class CustomerController {
 			
 	
 	}
-
-
-
-
 
 }

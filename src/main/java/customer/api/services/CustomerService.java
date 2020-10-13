@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 
 import customer.api.models.Address;
 import customer.api.models.Customer;
+import customer.api.models.CustomerFilter;
 import customer.api.repository.AddressRepository;
 import customer.api.repository.CustomerRepository;
 
@@ -43,8 +44,14 @@ public class CustomerService implements ICustomerService{
 	
 	
 	@Override
-	public List<Customer> findAll() {
-		return customerRepository.findAll();
+	public List<Customer> findAll(CustomerFilter filter) {
+		List<Customer> customers = customerRepository.findAll(filter);
+		if(!customers.isEmpty()) {
+			customers.forEach(c ->{
+				carregarEnderecos(c);
+			});
+		}
+		return customers;
 	}
 
 
@@ -81,7 +88,17 @@ public class CustomerService implements ICustomerService{
 	@Override
 	public Address saveAddress(Customer customer, Address address) {
 		address.setCustomer(customer);
-		return addressRepository.save(address);
+		Address savedAddress = addressRepository.save(address);
+				if(savedAddress.isMain()) {
+					List<Address> addresses = addressesFromCustomer(customer.getId());
+					addresses.forEach(a ->{
+						if(!savedAddress.getId().equals(a.getId())) {
+							addressRepository.resetMainAddress(a);
+						}
+					});
+				}
+		
+		return savedAddress;
 	}
 
 
@@ -103,7 +120,11 @@ public class CustomerService implements ICustomerService{
 		target.setNumber(source.getNumber());
 		target.setAdditionalInformation(source.getAdditionalInformation());
 		target.setNeighborhood(source.getNeighborhood());
-		target.setMain(source.isMain());
+		if(target.isMain()) {
+		target.setMain(target.isMain());
+		}else {
+			target.setMain(source.isMain());
+		}
 		target.setStreet(source.getStreet());
 		target.setZipCode(source.getZipCode());
 		Address updated = addressRepository.update(target);

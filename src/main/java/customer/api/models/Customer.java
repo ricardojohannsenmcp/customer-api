@@ -23,9 +23,6 @@ public class Customer {
 	private Address mainAddress;
 	private Collection<Address> adresses;
 
-
-
-
 	public void checkValidState(CustomerService customerService) {
 
 		if(birthDate != null) {
@@ -50,14 +47,11 @@ public class Customer {
 
 			Customer other = customerService.findByCpf(this.cpf);
 			if(other != null) {
-				System.out.println("other != null");
 				if(this.id != null) {
-					System.out.println("id != null");
 					if(!other.getId().equals(this.getId())) {
 						throw new BusinessException("the cpf informed is already registered");
 					}
 				}else {
-					System.out.println("é null");
 					throw new BusinessException("the cpf informed is already registered");
 				}
 			}
@@ -120,11 +114,9 @@ public class Customer {
 		this.adresses = adresses;
 	}
 
-
 	public Date getCreatedAt() {
 		return createdAt;
 	}
-
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
@@ -139,8 +131,5 @@ public class Customer {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-
-
 
 }

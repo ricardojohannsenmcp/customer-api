@@ -71,7 +71,6 @@ public class AddressRepository implements IAdressRepository{
 			Optional<Address> optional = handle.createQuery("SELECT a.id,a.state,a.city,a.neighborhood,a.zip_code,a.additional_information,a.street,a.number,a.main,a.customer_id from customer_db.address a where a.id = :id ")
 					.bind("id", id)
 					.map(new AddressRowMapper()).findOne();
-			
 			if(!optional.isPresent()) {
 				throw new BusinessException("This address not exists");
 			}

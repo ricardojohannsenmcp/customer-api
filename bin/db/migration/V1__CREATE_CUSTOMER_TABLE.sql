@@ -8,7 +8,7 @@ email varchar (255),
 birth_date date,
 cpf varchar (14),
 gender varchar (30),
-created_at date,
-updated_at date
+created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+updated_at timestamp DEFAULT CURRENT_TIMESTAMP
 
 )
