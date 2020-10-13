@@ -21,6 +21,7 @@ public class CustomerService implements ICustomerService{
 	@Override
 	public Customer save(Customer customer, Address address) {
 		customer.checkValidState(this);
+		address.checkValidState();
 		Customer createdCustomer = customerRepository.save(customer);
 	       address.setCustomer(createdCustomer);
 	       address.setMain(true);
