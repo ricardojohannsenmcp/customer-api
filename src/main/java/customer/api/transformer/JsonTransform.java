@@ -7,12 +7,14 @@ import spark.ResponseTransformer;
 public class JsonTransform implements ResponseTransformer{
 
 	@Override
-	public String render(Object model) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(model);
+	public String render(Object model) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.writeValueAsString(model);
+		} catch (Exception e) {
+			
+			throw new RuntimeException(e);
+		}
 	}
 	
-	
-	
-
 }

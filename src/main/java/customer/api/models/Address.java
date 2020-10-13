@@ -1,12 +1,16 @@
 package customer.api.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import customer.api.exceptions.ApiError;
 import customer.api.exceptions.BusinessException;
 
 public class Address {
-	
-	
+
+
 	private Integer id;
 	private String state;
 	private String city;
@@ -16,26 +20,44 @@ public class Address {
 	private String number;
 	private String additionalInformation;
 	private boolean main;
-	
+
 	@JsonIgnore
 	private Customer customer;
-	
-	
-	
+
+
+
 	public void checkbelongsTo(Customer other) {
 		if(!this.customer.getId().equals(other.getId())) {
 			throw new BusinessException("This Address not belong to this customer");
 		}
 	}
-	
+
 	public void checkCanBeDeleted() {
 		if(this.main) {
-		throw new BusinessException("Cannot remove. The customer needs own one main address");
+			throw new BusinessException("Cannot remove. The customer needs own one main address");
 		}
 	}
-	
-	
-	
+
+	public void checkValidState() {
+
+		List<ApiError> errors =  new ArrayList<>();
+		if(city == null || city.trim().isEmpty()) {
+			errors.add(new ApiError("field city is mandatory"));
+		}
+		if(state == null || state.trim().isEmpty()) {
+			errors.add(new ApiError("field state is mandatory"));
+		}
+		if(zipCode == null || zipCode.trim().isEmpty()) {
+			errors.add(new ApiError("field zip code is mandatory"));
+		}
+		if(neighborhood == null  || neighborhood.trim().isEmpty()) {
+			errors.add(new ApiError("field neighborhod is mandatory"));
+		}
+		if(!errors.isEmpty()) {
+			throw new BusinessException(errors);
+		}
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -96,9 +118,9 @@ public class Address {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
-	
-	
-	
+
+
+
+
 
 }

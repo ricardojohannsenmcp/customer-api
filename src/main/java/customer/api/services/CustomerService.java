@@ -88,6 +88,7 @@ public class CustomerService implements ICustomerService{
 	@Override
 	public Address saveAddress(Customer customer, Address address) {
 		address.setCustomer(customer);
+		address.checkValidState(); 
 		Address savedAddress = addressRepository.save(address);
 				if(savedAddress.isMain()) {
 					List<Address> addresses = addressesFromCustomer(customer.getId());
@@ -127,6 +128,7 @@ public class CustomerService implements ICustomerService{
 		}
 		target.setStreet(source.getStreet());
 		target.setZipCode(source.getZipCode());
+		target.checkValidState();
 		Address updated = addressRepository.update(target);
 		if(updated.isMain()) {
 			List<Address> addresses = addressesFromCustomer(customer.getId());
@@ -170,6 +172,7 @@ public class CustomerService implements ICustomerService{
 	       originalAddress.setId(originalAddress.getId());
 	       originalAddress.setAdditionalInformation(address.getAdditionalInformation());
 	       originalAddress.setMain(true);
+	       originalAddress.checkValidState();
 	       addressRepository.update(originalAddress);
 		}
 	       carregarEnderecos(updatedCustomer);
